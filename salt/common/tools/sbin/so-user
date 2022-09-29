@@ -323,7 +323,8 @@ function listUsers() {
   users=$(echo "${response}" | jq -r ".[] | .verifiable_addresses[0].value" | sort)
   for user in $users; do
     roles=$(grep ":$user\$" "$elasticRolesFile" | cut -d: -f1 | tr '\n' ' ')
-    echo "$user: $roles"
+    state=$(echo "${response}" | jq ".[]"| grep -m1 -B3 "$user" | egrep -o 'inactive|active')
+    echo "$user: $roles || $state"
   done
 }
 
